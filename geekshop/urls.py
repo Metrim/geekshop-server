@@ -25,6 +25,7 @@ urlpatterns = [
     path('', index, name='index'),
     path('products/', include('mainapp.urls', namespace='products')),
     # path('products/', products, name='products'),
+    path('users/', include('authapp.urls', namespace='users')),
 ]
 
 if settings.DEBUG:
