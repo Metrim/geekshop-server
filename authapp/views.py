@@ -25,11 +25,13 @@ def login(request):
 def register(request):
     if request.method == "POST":
         form = UserRegisterForm(data=request.POST)
-        # Выводит ошибки по которым форма не проходит валидацию:
-        print(form.errors)
+
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('users:login'))
+        else:
+            # Выводит ошибки по которым форма не проходит валидацию:
+            print(form.errors)
     else:
         form = UserRegisterForm()
     context = {'title': 'GeekShop - Регистрация', 'form': form}
