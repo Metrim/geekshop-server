@@ -56,8 +56,25 @@ def profile(request):
             return HttpResponseRedirect(reverse('users:profile'))
     else:
         form = UserProfileForm(instance=request.user)
+
+    # Первый способ:
+    baskets = Basket.objects.filter(user=request.user)
+    # total_quantity = 0
+    # total_sum = 0
+    # for basket in baskets:
+    #     total_quantity += basket.quantity
+    #     total_sum += basket.sum()
+
+    # второй способ:
+    # total_quantity = sum(basket.quantity for basket in baskets)
+    # total_sum = sum(basket.sum() for basket in baskets)
+
     context = {
         'title': 'GeekShop- Личный кабинет',
         'form': form,
-        'baskets': Basket.objects.all()}
+        'baskets': baskets,
+        # Третий способ:
+        # 'total_quantity': sum(basket.quantity for basket in baskets),
+        # 'total_sum': sum(basket.sum() for basket in baskets),
+    }
     return render(request, 'authapp/profile.html', context)
