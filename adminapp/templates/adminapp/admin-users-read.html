@@ -34,7 +34,7 @@
                                 {%  for user in users %}
                                     <tr>
                                         <td>
-                                            <a href="admin-users-update-delete.html" style="color: dodgerblue">
+                                            <a href="{% url "admin_staff:admin_users_update" user.id %}" style="color: dodgerblue">
                                                 {{ user.username }}
                                             </a>
                                         </td>
@@ -64,7 +64,7 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <a href="admin-users-create.html">
+                        <a href="{% url 'admin_staff:admin_users_create' %}">
                             <button class="btn btn-success">Создать пользователя</button>
                         </a>
                     </div>
