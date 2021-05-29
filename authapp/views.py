@@ -1,7 +1,11 @@
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth, messages
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.views.generic.list import ListView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.utils.decorators import method_decorator
+from django.contrib.messages.views import SuccessMessageMixin
 
 
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
@@ -25,21 +29,33 @@ def login(request):
     return render(request, 'authapp/login.html', context)
 
 
-def register(request):
-    if request.method == "POST":
-        form = UserRegisterForm(data=request.POST)
+class RegisterCreateView(SuccessMessageMixin, CreateView):
+    template_name = 'authapp/register.html'
+    form_class = UserRegisterForm
+    success_url = reverse_lazy('users:profile')
+    success_message = 'Вы успешно зарегистрировались!'
 
-        if form.is_valid() and form.clean_first_name():
-            form.save()
-            messages.success(request, 'Вы успешно зарегистрировались!')
-            return HttpResponseRedirect(reverse('users:login'))
-        else:
-            # Выводит ошибки по которым форма не проходит валидацию:
-            print(form.errors)
-    else:
-        form = UserRegisterForm()
-    context = {'title': 'GeekShop - Регистрация', 'form': form}
-    return render(request, 'authapp/register.html', context)
+    def get_context_data(self, **kwargs):
+        context = super(RegisterCreateView, self).get_context_data(**kwargs)
+        context.update({'title': 'GeekShop - Регистрация'})
+        return context
+
+
+# def register(request):
+#     if request.method == "POST":
+#         form = UserRegisterForm(data=request.POST)
+#
+#         if form.is_valid() and form.clean_first_name():
+#             form.save()
+#             messages.success(request, 'Вы успешно зарегистрировались!')
+#             return HttpResponseRedirect(reverse('users:login'))
+#         else:
+#             # Выводит ошибки по которым форма не проходит валидацию:
+#             print(form.errors)
+#     else:
+#         form = UserRegisterForm()
+#     context = {'title': 'GeekShop - Регистрация', 'form': form}
+#     return render(request, 'authapp/register.html', context)
 
 
 def logout(request):
