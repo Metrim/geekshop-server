@@ -146,7 +146,7 @@ EMAIL_HOST_USER = 'django@gb.local'
 EMAIL_HOST_PASSWORD = 'geekbrains'
 EMAIL_USE_SSL = False
 
-#python3 -m smtpd
+#python3 -m smtpd -n -c DebuggingServer localhost:25
 #EMAIL_HOST_USER, EMAIL_HOST_PASSWORD = None, None
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'

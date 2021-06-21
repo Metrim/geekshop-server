@@ -11,6 +11,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 
 
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+from authapp.models import User
 from basketapp.models import Basket
 # Create your views here.
 
@@ -112,4 +113,11 @@ def send_verify_link(user):
 
 
 def verify(request, email, key):
-    pass
+    user = User.objects.filter(email=email).first()
+    if user and user.activation_key == key and not user.is_activation_key_expired():
+        user.is_active = True
+        user.activation_key = ''
+        user.activation_key_created = None
+        user.save()
+        auth.login(request, user)  # user автоматически авторизуется
+    return render(request, 'authapp/verify.html')
