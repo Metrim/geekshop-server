@@ -8,6 +8,8 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import auth
+
 
 
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
@@ -45,9 +47,10 @@ class RegisterCreateView(SuccessMessageMixin, CreateView):
 
     # срабатывание отправки письма при реализации CBV, обязательно возвращаем HttpResponse
     def form_valid(self, form):
+        super(RegisterCreateView, self).form_valid(form)
         user = form.save()
         send_verify_link(user)
-        return super().form_valid(form)
+        return HttpResponseRedirect(reverse('users:login'))
 
 
 # def register(request):
@@ -106,7 +109,8 @@ def profile(request):
 
 
 def send_verify_link(user):
-    verify_link = reverse('authapp:verify', args=[user.email, user.activation_key])
+    verify_link = reverse('users:verify', args=[user.email, user.activation_key])
+    print(user.activation_key, verify_link)
     subject = 'Account verify'
     message = f'Your link for account activation: {settings.DOMAIN_NAME}{verify_link}'
     return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
