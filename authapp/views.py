@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.core.mail import send_mail
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth, messages
 from django.urls import reverse, reverse_lazy
@@ -39,6 +41,12 @@ class RegisterCreateView(SuccessMessageMixin, CreateView):
         context = super(RegisterCreateView, self).get_context_data(**kwargs)
         context.update({'title': 'GeekShop - Регистрация'})
         return context
+
+    # срабатывание отправки письма при реализации CBV, обязательно возвращаем HttpResponse
+    def form_valid(self, form):
+        user = form.save()
+        send_verify_link(user)
+        return super().form_valid(form)
 
 
 # def register(request):
@@ -94,3 +102,14 @@ def profile(request):
         # 'total_sum': sum(basket.sum() for basket in baskets),
     }
     return render(request, 'authapp/profile.html', context)
+
+
+def send_verify_link(user):
+    verify_link = reverse('authapp:verify', args=[user.email, user.activation_key])
+    subject = 'Account verify'
+    message = f'Your link for account activation: {settings.DOMAIN_NAME}{verify_link}'
+    return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+
+
+def verify(request, email, key):
+    pass
