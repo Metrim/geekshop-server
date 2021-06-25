@@ -105,3 +105,8 @@ class UserProfileEditForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
+
+    gender = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control py-4',
+        'readonly': True
+    }))
