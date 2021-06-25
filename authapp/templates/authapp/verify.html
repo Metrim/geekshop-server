@@ -1,0 +1,20 @@
+{% extends 'authapp/base.html' %}
+
+{% block  content %}
+    <div class="col-lg-7">
+        <div class="card shadow-lg border-0 rounded-lg mt-5">
+            {% if user.is_authenticated %}
+                <h1>Поздравляем!</h1>
+                <p>Вы успешно активировали аккаунт</p>
+                <br>
+            {% else %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert"
+                 style="margin-top: 50px;">
+                    <h1>Что-то пошло не так</h1>
+                    <p>К сожалению не удалось активировать аккаунт</p>
+                </div>
+            {% endif %}
+            <a href="{% url 'mainapp:index' %}">На Главную</a>
+        </div>
+    </div>
+{% endblock %}

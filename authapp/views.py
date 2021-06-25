@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.core.mail import send_mail
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth, messages
 from django.urls import reverse, reverse_lazy
@@ -6,9 +8,12 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import auth
+
 
 
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+from authapp.models import User
 from basketapp.models import Basket
 # Create your views here.
 
@@ -39,6 +44,13 @@ class RegisterCreateView(SuccessMessageMixin, CreateView):
         context = super(RegisterCreateView, self).get_context_data(**kwargs)
         context.update({'title': 'GeekShop - Регистрация'})
         return context
+
+    # срабатывание отправки письма при реализации CBV, обязательно возвращаем HttpResponse
+    def form_valid(self, form):
+        super(RegisterCreateView, self).form_valid(form)
+        user = form.save()
+        send_verify_link(user)
+        return HttpResponseRedirect(reverse('users:login'))
 
 
 # def register(request):
@@ -94,3 +106,22 @@ def profile(request):
         # 'total_sum': sum(basket.sum() for basket in baskets),
     }
     return render(request, 'authapp/profile.html', context)
+
+
+def send_verify_link(user):
+    verify_link = reverse('users:verify', args=[user.email, user.activation_key])
+    print(user.activation_key, verify_link)
+    subject = 'Account verify'
+    message = f'Your link for account activation: {settings.DOMAIN_NAME}{verify_link}'
+    return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
+
+
+def verify(request, email, key):
+    user = User.objects.filter(email=email).first()
+    if user and user.activation_key == key and not user.is_activation_key_expired():
+        user.is_active = True
+        user.activation_key = ''
+        user.activation_key_created = None
+        user.save()
+        auth.login(request, user)  # user автоматически авторизуется
+    return render(request, 'authapp/verify.html')
