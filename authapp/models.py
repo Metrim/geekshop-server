@@ -29,7 +29,7 @@ class UserProfile(models.Model):
 
     GENDER_CHOICES = (
         (MALE, 'М'),
-        (FEMALE, 'М'),
+        (FEMALE, 'Ж'),
     )
 
     user = models.OneToOneField(User, unique=True, null=False, db_index=True, on_delete=models.CASCADE)
