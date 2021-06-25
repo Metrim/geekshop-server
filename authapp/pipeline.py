@@ -34,7 +34,7 @@ def save_user_profile(backend, user, response, *args, **kwargs):
     if vk_data['bdate']:
         b_date = datetime.strptime(vk_data['bdate'], '%d.%m.%Y').date()
         age = timezone.now().date().year - b_date.year
-        if age < 18:
+        if age < 100:
             user.delete()
             raise AuthForbidden('social_core.backends.vk.VKOAuth2')
         user.userprofile.age = age
