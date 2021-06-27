@@ -27,7 +27,7 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='создан')
     updated = models.DateTimeField(auto_now=True, verbose_name='обновлен')
     is_active = models.BooleanField(default=True)
-    status = models.CharField(choices=STATUSES, default=FORMING, verbose_name='статус')
+    status = models.CharField(choices=STATUSES, default=FORMING, verbose_name='статус', max_length=16)
 
     def get_total_quantity(self):
         _items = self.orderitems.select_related()
