@@ -24,7 +24,6 @@ def save_user_profile(backend, user, response, *args, **kwargs):
 
     vk_data = vk_response.json()['response'][0]
 
-    print(vk_data)
 
     if vk_data['sex']:
         if vk_data['sex'] == 2:
@@ -46,7 +45,6 @@ def save_user_profile(backend, user, response, *args, **kwargs):
     if vk_data['photo_max_orig']:
         photo_link = vk_data['photo_max_orig']
         photo_name = photo_link.split('.jpg')[0].split('/')[-1]
-        print(user.image)
         if photo_name not in user.image:
             photo_response = requests.get(photo_link)
             user_photo_path = f'users_images/{photo_name}.jpg'
