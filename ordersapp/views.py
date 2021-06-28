@@ -1,9 +1,10 @@
 from django.db import transaction
 from django.forms import inlineformset_factory
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from basketapp.models import Basket
@@ -64,7 +65,7 @@ class OrderCreate(CreateView):
 
 
 class OrderRead(DetailView):
-    pass
+    model = Order
 
 
 class OrderUpdate(UpdateView):
@@ -105,4 +106,8 @@ class OrderDelete(DeleteView):
 
 
 def forming_complete(request, pk):
-    pass
+    order = get_object_or_404(Order, pk=pk)
+    order.status = Order.SENT_TO_PROCEED
+    order.save()
+
+    return HttpResponseRedirect(reverse('order:list'))
