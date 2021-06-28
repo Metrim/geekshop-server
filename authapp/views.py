@@ -11,8 +11,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import auth
 
 
-
-from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm, UserProfileEditForm
 from authapp.models import User
 from basketapp.models import Basket
 # Create your views here.
@@ -79,11 +78,13 @@ def logout(request):
 def profile(request):
     if request.method == 'POST':
         form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
-        if form.is_valid():
+        profile_form = UserProfileEditForm(data=request.POST, instance=request.user.userprofile)
+        if form.is_valid() and profile_form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('users:profile'))
     else:
         form = UserProfileForm(instance=request.user)
+        profile_form = UserProfileEditForm(instance=request.user.userprofile)
 
     # Первый способ:
     baskets = Basket.objects.filter(user=request.user)
@@ -104,6 +105,7 @@ def profile(request):
         # Третий способ:
         # 'total_quantity': sum(basket.quantity for basket in baskets),
         # 'total_sum': sum(basket.sum() for basket in baskets),
+        'profile_form': profile_form,
     }
     return render(request, 'authapp/profile.html', context)
 
