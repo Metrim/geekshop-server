@@ -57,9 +57,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'order:list' %}">Мои Заказы <i class="fas fa-th-list"></i></a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'users:logout' %}">Выйти <i class="fas fa-sign-out-alt"></i></a>
                     </li>
                 {% else %}
@@ -73,9 +70,9 @@
 </nav>
 
 <!-- Page Content -->
-{% block content %} {% endblock %}
+<div style="margin: 0 25%">{% block content %} {% endblock %}</div>
 
-{% block footer %} {% endblock %}
+
 
 <!-- Bootstrap core JavaScript -->
 <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
