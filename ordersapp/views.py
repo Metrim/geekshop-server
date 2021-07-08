@@ -45,6 +45,7 @@ class OrderCreate(CreateView):
                 for num, form in enumerate(formset.forms):
                     form.initial['product'] = basket_items[num].product
                     form.initial['quantity'] = basket_items[num].quantity
+                    form.initial['price'] = basket_items[num].product.price
                 # Clear the basket for the new order with delete() for each object:
                 for basket_item in basket_items:
                     basket_item.delete()
@@ -90,7 +91,11 @@ class OrderUpdate(UpdateView):
             formset = OrderFormSet(self.request.POST, instance=self.object)
         else:
             formset = OrderFormSet(instance=self.object)
-
+            # проходимся по всем формам, которые лежат в formset по ключевому слову forms:
+            for form in formset.forms:
+            # И если в форме у instance есть pk, то это не пустая новая строка - нижняя в нашей форме, то инициализируем:
+                if form.instance.pk:
+                    form.initial['price'] = form.instance.product.price
         data['orderitems'] = formset
         return data
 
