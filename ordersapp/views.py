@@ -147,7 +147,7 @@ def products_quantity_update_delete(sender, instance, **kwargs):
     instance.product.save()
 
 
-# Create function in controller to get back the price:
+# Create function in controller to get back the price when we change in the order list and handle with jQuery:
 def get_product_price(request, pk):
     if request.is_ajax():
         product = Product.objects.filter(pk=pk).first()
@@ -156,3 +156,18 @@ def get_product_price(request, pk):
         else:
             return JsonResponse({'price': 0})
 
+
+# Function to handle with payment system:
+def payment_result(request):
+    # feedback parsing get request:
+    # ?ik_co_id=51237daa8f2a2d8413000000& - this one in the simple way we do not handle
+    # ik_inv_id=319029826& - this one in the simple way we do not handle
+    # ik_inv_st=success&
+    # ik_pm_no=ID11
+    payment_status = request.GET.get('ik_inv_st')
+    if payment_status == 'success':
+        order_pk = request.GET.get('ik_pm_no').replace('ID', '')  # Handle with ik_pm_no parameter
+        order_item = Order.objects.get(pk=order_pk)
+        order_item.status = Order.PAID
+        order_item.save()
+    return HttpResponseRedirect(reverse('order:list'))
