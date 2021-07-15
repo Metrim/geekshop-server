@@ -4,6 +4,7 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.contrib import auth, messages
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
@@ -15,8 +16,11 @@ from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm, User
 from authapp.models import User
 from basketapp.models import Basket
 # Create your views here.
+from geekshop.settings import DEBUG
 
 
+# делаем отключение csrf token, чтобы siege смог бы подключиться
+@csrf_exempt
 def login(request):
     if request.method == 'POST':
         form = UserLoginForm(data=request.POST)
@@ -31,6 +35,7 @@ def login(request):
         form = UserLoginForm()
     context = {'title': 'GeekShop - Авторизация', 'form': form}
     return render(request, 'authapp/login.html', context)
+
 
 
 class RegisterCreateView(SuccessMessageMixin, CreateView):

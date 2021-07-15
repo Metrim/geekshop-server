@@ -1,0 +1,12 @@
+http://80.78.251.184/
+http://80.78.251.184/users/login/ POST username=test&password=test
+http://80.78.251.184/products/
+http://80.78.251.184/products/page/2/
+http://80.78.251.184/products/1/
+http://80.78.251.184/products/3/
+http://80.78.251.184/users/profile/
+http://80.78.251.184/admin-staff/
+http://80.78.251.184/admin-staff/admin-users-read/
+http://80.78.251.184/order/
+http://80.78.251.184/order/read/6/
+http://80.78.251.184/order/update/6/
