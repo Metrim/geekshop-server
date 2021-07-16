@@ -97,7 +97,9 @@ class OrderUpdate(UpdateView):
         if self.request.POST:
             formset = OrderFormSet(self.request.POST, instance=self.object)
         else:
-            formset = OrderFormSet(instance=self.object)
+            queryset = self.object.orderitems.select_related()
+            formset = OrderFormSet(instance=self.object, queryset=queryset)
+            # formset = OrderFormSet(instance=self.object)
             # проходимся по всем формам, которые лежат в formset по ключевому слову forms:
             for form in formset.forms:
             # И если в форме у instance есть pk, то это не пустая новая строка - нижняя в нашей форме, то инициализируем:
