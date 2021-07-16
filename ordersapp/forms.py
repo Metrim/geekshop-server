@@ -30,4 +30,4 @@ class OrderItemEditForm(forms.ModelForm):
             field.widget.attrs['class'] = 'form-control py4'
             field.help_text = ''
 
-        self.fields['product'].queryset = Product.get_items().select_related()
+        self.fields['product'].queryset = Product.objects.all().select_related()
