@@ -40,7 +40,7 @@ class Basket(models.Model):
 
     def total_sum(self):
         _items = self.get_items_cached
-        return sum(list(map(lambda x: x.product_cost, _items)))
+        return sum(list(map(lambda x: x.sum, _items)))
 
     # Initial Uncached controllers
     # def total_quantity(self):
