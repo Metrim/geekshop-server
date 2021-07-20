@@ -38,7 +38,7 @@ class Basket(models.Model):
         _items = self.get_items_cached
         return sum(list(map(lambda x: x.quantity, _items)))
 
-    def total_cost(self):
+    def total_sum(self):
         _items = self.get_items_cached
         return sum(list(map(lambda x: x.product_cost, _items)))
 
