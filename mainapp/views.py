@@ -18,7 +18,7 @@ def get_links_menu():
             cache.set(key, links_menu)
         return links_menu
     else:
-        return ProductCategory.objects.filter(is_active=True)
+        return ProductCategory.objects.all()
 
 
 def index(request):
