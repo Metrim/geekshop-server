@@ -1,10 +1,24 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic.list import ListView
+from django.conf import settings
+from django.core.cache import cache
 
 # Create your views here.
 
 from mainapp.models import Product, ProductCategory
+
+
+def get_links_menu():
+    if settings.LOW_CACHE:
+        key = 'links_menu'
+        links_menu = cache.get(key)
+        if links_menu is None:
+            links_menu = ProductCategory.objects.filter(is_active=True)
+            cache.set(key, links_menu)
+        return links_menu
+    else:
+        return ProductCategory.objects.filter(is_active=True)
 
 
 def index(request):
@@ -17,7 +31,7 @@ def index(request):
 def products(request, category_id=None, page=1):
     context = {
         'title': 'GeekShop - Каталог',
-        'categories': ProductCategory.objects.all(),
+        'categories': get_links_menu(),  # ProductCategory.objects.all(), - the commented value is without cached
     }
     # Делаем через тернарный оператор:
     products = Product.objects.filter(category_id=category_id) if category_id else Product.objects.all()
@@ -66,4 +80,3 @@ def products(request, category_id=None, page=1):
     #     'categories': ProductCategory.objects.all(),
     # }
     return render(request, 'mainapp/products.html', context)
-
