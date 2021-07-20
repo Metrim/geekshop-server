@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils.functional import cached_property
+
 from authapp.models import User
 from mainapp.models import Product
 # Create your models here.
@@ -17,7 +19,7 @@ class BasketQuerySet(models.QuerySet):
 class Basket(models.Model):
     objects = BasketQuerySet.as_manager()  # Redefined field "objects" to work with the QuerySet
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='basket')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
     created_timestamp = models.DateTimeField(auto_now_add=True)
@@ -28,13 +30,26 @@ class Basket(models.Model):
     def sum(self):
         return self.quantity * self.product.price
 
-    def total_quantity(self):
-        baskets = Basket.objects.filter(user=self.user)
-        return sum(basket.quantity for basket in baskets)
+    @cached_property
+    def get_items_cached(self):
+        return self.user.basket.select_related()
 
-    def total_sum(self):
-        baskets = Basket.objects.filter(user=self.user)
-        return sum(basket.sum() for basket in baskets)
+    def total_quantity(self):
+        _items = self.get_items_cached
+        return sum(list(map(lambda x: x.quantity, _items)))
+
+    def total_cost(self):
+        _items = self.get_items_cached
+        return sum(list(map(lambda x: x.product_cost, _items)))
+
+    # Initial Uncached controllers
+    # def total_quantity(self):
+    #     baskets = Basket.objects.filter(user=self.user)
+    #     return sum(basket.quantity for basket in baskets)
+    #
+    # def total_sum(self):
+    #     baskets = Basket.objects.filter(user=self.user)
+    #     return sum(basket.sum() for basket in baskets)
 
     @staticmethod
     def get_item(pk):
