@@ -50,7 +50,7 @@ class Command(BaseCommand):
                                then=F('product__price') * F('quantity') * action_1__discount)
 
         action_2__price = When(action_2__condition,
-                               then=F('product__price') * F('quantity') * -action_2__discount)
+                               then=F('product__price') * F('quantity') * action_2__discount)
 
         action_expired__price = When(action_expired__condition,
                                      then=F('product__price') * F('quantity') * action_expired__discount)
