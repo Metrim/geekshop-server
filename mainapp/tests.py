@@ -21,10 +21,11 @@ class TestMainappSmoke(TestCase):
         cat_1 = ProductCategory.objects.create(
             name='cat_1'
         )
-        Product.objects.create(
-            category=cat_1,
-            name='prod_1'
-        )
+        for i in range(100):
+            Product.objects.create(
+                category=cat_1,
+                name=f'prod_{i}'
+            )
 
     def test_mainapp_urls(self):
         response = self.client.get('/')
