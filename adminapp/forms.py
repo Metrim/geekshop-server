@@ -47,7 +47,8 @@ class ProductCategoryEditForm(forms.ModelForm):
 
 
 def db_profile_by_type(__class__, param, queries):
-    pass
+    update_queries = list(filter(lambda x: param in x['sql'], queries))
+    print(f'{__class__} queries: {update_queries}')
 
 
 class ProductCategoryUpdateView(UpdateView):

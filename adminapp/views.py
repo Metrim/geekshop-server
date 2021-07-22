@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from authapp.models import User
 from adminapp.forms import UserAdminRegisterForm, UserAdminProfileForm
 
+
 # Create your views here.
 
 
@@ -25,6 +26,7 @@ class UserListView(ListView):
     def dispatch(self, request, *args, **kwargs):
         return super(UserListView, self).dispatch(request, *args, **kwargs)
 
+
 # То же самое, но в виде функции:
 # @user_passes_test(lambda u: u.is_superuser)
 # def admin_users_read(request):
@@ -41,6 +43,7 @@ class UserCreateView(CreateView):
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def dispatch(self, request, *args, **kwargs):
         return super(UserCreateView, self).dispatch(request, *args, **kwargs)
+
 
 # То же самое, но в виде функции:
 # @user_passes_test(lambda u: u.is_superuser)
@@ -70,6 +73,7 @@ class UserUpdateView(UpdateView):
     def dispatch(self, request, *args, **kwargs):
         return super(UserUpdateView, self).dispatch(request, *args, **kwargs)
 
+
 # То же самое, но в виде функции:
 # @user_passes_test(lambda u: u.is_superuser)
 # def admin_users_update(request, user_id):
@@ -98,6 +102,7 @@ class UserDeleteView(DeleteView):
     def dispatch(self, request, *args, **kwargs):
         return super(UserDeleteView, self).dispatch(request, *args, **kwargs)
 
+
 # То же самое, но в виде функции:
 # @user_passes_test(lambda u: u.is_superuser)
 # def admin_users_remove(request, user_id):
@@ -108,3 +113,8 @@ class UserDeleteView(DeleteView):
 #     user.is_active = False
 #     user.save()
 #     return HttpResponseRedirect(reverse('admin_staff:admin_users_read'))
+
+# Function for the 8th lesson
+def db_profile_by_type(script_name, delimeter, in_quaries):
+    update_queries = list(in_quaries)
+    print(f'{script_name} {delimeter}: {update_queries}')
