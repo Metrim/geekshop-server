@@ -125,6 +125,8 @@ class TestUserManagement(TestCase):
         response = self.client.get('/')
         self.assertContains(response, text=new_user_data['username'], status_code=200)
 
+        new_user.refresh_from_db()
+        self.assertTrue(new_user.is_active)
     #
     # Age check is not realized in my scenario:
     # def test_user_wrong_register(self):
