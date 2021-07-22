@@ -1,3 +1,5 @@
+from django.db import connection
+from django.db.models import F
 from django.shortcuts import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
@@ -19,8 +21,16 @@ def basket_add(request, product_id=None):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
     else:
         basket = baskets.first()
-        basket.quantity += 1
+        # basket.quantity += 1
+        # With reworked command F-object:
+        basket.quantity = F('quantity') + 1
         basket.save()
+
+        # Additional logging for the queries:
+        update_queries = list(filter(lambda x: 'UPDATE' in x['sql'], connection.queries))
+        print(f'query basket_add: {update_queries}')
+
+
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 

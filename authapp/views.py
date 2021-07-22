@@ -11,7 +11,6 @@ from django.utils.decorators import method_decorator
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import auth
 
-
 from authapp.forms import UserLoginForm, UserRegisterForm, UserProfileForm, UserProfileEditForm
 from authapp.models import User
 from basketapp.models import Basket
@@ -22,6 +21,10 @@ from geekshop.settings import DEBUG
 # делаем отключение csrf token, чтобы siege смог бы подключиться
 @csrf_exempt
 def login(request):
+    # If user already sign in then we forward him to the main page
+    # if request.user.is_authenticated:
+    #     return HttpResponseRedirect(reverse('index'))
+
     if request.method == 'POST':
         form = UserLoginForm(data=request.POST)
         if form.is_valid():
@@ -35,7 +38,6 @@ def login(request):
         form = UserLoginForm()
     context = {'title': 'GeekShop - Авторизация', 'form': form}
     return render(request, 'authapp/login.html', context)
-
 
 
 class RegisterCreateView(SuccessMessageMixin, CreateView):
@@ -130,5 +132,5 @@ def verify(request, email, key):
         user.activation_key = ''
         user.activation_key_created = None
         user.save()
-        auth.login(request, user)  # user автоматически авторизуется
+        auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')  # user автоматически авторизуется
     return render(request, 'authapp/verify.html')
